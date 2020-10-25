@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import desc
 from datetime import datetime
 
 app = Flask(__name__)
@@ -26,21 +27,7 @@ class Data(db.Model):
     temperature = db.Column(db.Float, default=0.0)
     humidity = db.Column(db.Float, default=0.0)
     instrument_id = db.Column(db.Integer, db.ForeignKey('instrument.id'), nullable=False)
-    instrument = db.relationship('Instrument', backref=db.backref('datas', lazy=True))
-
-    def __init__(self, created_date, temperature, humidity, instrument_id):
-        self.created_date = created_date
-        self.temperature = temperature
-        self.humidity = humidity
-        self.instrument_id = instrument_id
-        self.instrument = Instrument.query.get(instrument_id)
-
-    def __init__(self, temperature, humidity, instrument_id):
-        self.created_date = datetime.now()
-        self.temperature = temperature
-        self.humidity = humidity
-        self.instrument_id = instrument_id
-        self.instrument = Instrument.query.get(instrument_id)
+    instrument = db.relationship('Instrument', backref=db.backref('datas', lazy=False))
 
     def serialize(self):
         return {
@@ -54,7 +41,17 @@ class Data(db.Model):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    results = []
+    instruments = Instrument.query.all()
+    for ins in instruments:
+        data = Data.query.filter_by(instrument_id=ins.id).order_by(desc(Data.created_date)).first()
+        if data is None:
+            data = Data()
+            data.instrument_id = ins.id
+            data.instrument = ins
+        print(data.instrument.name)
+        results.append(data)
+    return render_template("index.html", results = results)
 
 @app.route("/login")
 def login():

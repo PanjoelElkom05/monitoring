@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <title>dasboard</title>
+        <link rel="stylesheet" href="static/style.css">
+    </head>
+   
+    <body>
+		<div class="containerh">
+			<h1>PURA POWER PLANT</h1>
+        </div>
+        
+        <div class="container"> 
+          {% for result in results %}
+          <h2>{{result.instrument.name}}</h2>
+          <label>temperature</label><label>{{result.temperature}}</label><br>
+          <label>humidity</label><label>{{result.humidity}}</label><br>
+          <label>latest</label><label>{{result.created_date}}</label><br>
+          {% endfor %}
+        </div>     
+    </body>
+</html>
