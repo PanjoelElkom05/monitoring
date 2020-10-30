@@ -4,7 +4,7 @@ from sqlalchemy import desc
 from datetime import datetime
 
 app = Flask(__name__)
-app.debug = True
+app.debug = False
 app.config ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///monitoring.sqlite3'
 db = SQLAlchemy(app)
 
@@ -49,7 +49,6 @@ def index():
             data = Data()
             data.instrument_id = ins.id
             data.instrument = ins
-        print(data.instrument.name)
         results.append(data)
     return render_template("index.html", results = results)
 
@@ -91,4 +90,4 @@ def addData():
     return getData()
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host="0.0.0.0")
