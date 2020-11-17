@@ -4,7 +4,7 @@ from sqlalchemy import desc
 from datetime import datetime
 
 app = Flask(__name__)
-app.debug = False
+app.debug = True
 app.config ['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///monitoring.sqlite3'
 db = SQLAlchemy(app)
 
